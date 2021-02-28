@@ -1,6 +1,5 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.lang.reflect.Array;
+import java.util.*;
 
 public class BinPacking {
 
@@ -21,7 +20,34 @@ public class BinPacking {
         }
     }
 
-    public String toString() {
+    public void FirstFitDecreasing() {
+        // Trie des items
+        ArrayList<Item> itemsSorted = new ArrayList<>(items);
+        Collections.sort(itemsSorted);
+
+        //Placement
+        Bin binCurrent = new Bin(binCapacity);
+        for (Item item : itemsSorted) {
+            if (bins.size() == 0 || binCurrent.getFreeSize() < item.getSize()) {
+                Bin bin = new Bin(binCapacity);
+                bin.getItems().add(item);
+                bin.setFreeSize(binCapacity - item.getSize());
+                bins.add(bin);
+                binCurrent = bin;
+            }
+            else if (binCurrent.getFreeSize() >= item.getSize()) {
+                binCurrent.getItems().add(item);
+                binCurrent.setFreeSize(binCurrent.getFreeSize() - item.getSize());
+            }
+        }
+    }
+
+    public String toStringItems() {
         return items.toString();
     }
+
+    public String toStringBins() {
+        return bins.toString();
+    }
+
 }

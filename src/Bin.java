@@ -36,4 +36,11 @@ public class Bin {
     public void setItems(List<Item> items) {
         this.items = items;
     }
+
+    public String toString() {
+        String s = "";
+        for (Item item : items)
+            s = s+item.toString() + " ";
+        return s;
+    }
 }

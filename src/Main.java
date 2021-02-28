@@ -2,7 +2,6 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,9 +9,8 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
-        String filename = "binpack1d_001.txt";
+        String filename = "data/binpack1d_01.txt";
         BufferedReader br = new BufferedReader(new FileReader(filename));
-        br.readLine();
         String line = br.readLine();
         String[] parameters = line.split(" ");
         int binCapacity = Integer.parseInt(parameters[0]);
@@ -25,7 +23,9 @@ public class Main {
 
         BinPacking binPacking = new BinPacking(binCapacity, numberOfItem, itemsSizes);
 
-        System.out.println(binPacking.toString());
+        System.out.println(binPacking.toStringItems());
         System.out.println("Capacity " + binCapacity);
+        binPacking.FirstFitDecreasing();
+        System.out.println(binPacking.toStringBins());
     }
 }

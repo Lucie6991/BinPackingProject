@@ -1,6 +1,6 @@
 import java.util.Optional;
 
-public class Item {
+public class Item implements Comparable<Item> {
 
     private int size;
     private boolean used;
@@ -36,9 +36,13 @@ public class Item {
         this.bin = bin;
     }
 
-
-
     public String toString() {
         return String.valueOf(size);
+    }
+
+
+    @Override
+    public int compareTo(Item o) {
+        return Integer.compare(o.size, size);
     }
 }
