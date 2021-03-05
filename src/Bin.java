@@ -1,6 +1,9 @@
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe qui représente un Bin
+ */
 public class Bin {
 
     private int freeSize;

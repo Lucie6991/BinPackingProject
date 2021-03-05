@@ -1,28 +1,12 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Main {
 
     public static void main(String[] args) throws IOException {
 
-        String filename = "data/binpack1d_01.txt";
-        BufferedReader br = new BufferedReader(new FileReader(filename));
-        String line = br.readLine();
-        String[] parameters = line.split(" ");
-        int binCapacity = Integer.parseInt(parameters[0]);
-        int numberOfItem = Integer.parseInt(parameters[1]);
-
-        List<Integer> itemsSizes = new ArrayList<>();
-        while ((line = br.readLine()) != null) {
-            itemsSizes.add(Integer.parseInt(line));
-        }
-
-        BinPacking binPacking1 = new BinPacking(binCapacity, numberOfItem, itemsSizes);
-        BinPacking binPacking2 = new BinPacking(binCapacity, numberOfItem, itemsSizes);
-        BinPacking binPacking3 = new BinPacking(binCapacity, numberOfItem, itemsSizes);
+        BinPacking binPacking1 = DataConverter.convertFile("data/binpack1d_01.txt");
+        BinPacking binPacking2 = DataConverter.convertFile("data/binpack1d_01.txt");
+        BinPacking binPacking3 = DataConverter.convertFile("data/binpack1d_01.txt");
 
 //        System.out.println(binPacking.toStringItems());
 //        System.out.println("Capacity " + binCapacity);

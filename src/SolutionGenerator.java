@@ -1,5 +1,8 @@
 import java.util.List;
 
+/**
+ * Classe qui permet de générer des solutions alétaoires de BinPacking
+ */
 public class SolutionGenerator {
 
     private static List<Item> items;

@@ -1,5 +1,8 @@
 import java.util.Optional;
 
+/**
+ * Classe qui représente un item
+ */
 public class Item implements Comparable<Item> {
 
     private int size;

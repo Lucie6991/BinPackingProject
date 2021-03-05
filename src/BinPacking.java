@@ -1,6 +1,11 @@
-import java.lang.reflect.Array;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
+/**
+ * Classe qui représente un BinPacking avec ses bins et ses items
+ */
 public class BinPacking {
 
     private List<Bin> bins;
@@ -15,7 +20,7 @@ public class BinPacking {
         this.items = new ArrayList<>();
         this.bins = new ArrayList<>();
         this.usedBin = new ArrayList<>();
-        for (int itemSize : itemsSizes){
+        for (int itemSize : itemsSizes) {
             items.add(new Item(itemSize));
         }
     }
@@ -68,10 +73,16 @@ public class BinPacking {
         this.usedBin = usedBin;
     }
 
+    /**
+     * Méthode qui permet de classer les items dans le sens décroissant de leur taille
+     */
     public void sortItemsDecreasing() {
         items.sort(Comparator.reverseOrder());
     }
 
+    /**
+     * Méthode qui permet de classer les items selon un ordre aléatoire
+     */
     public void shuffleItems() {
         Collections.shuffle(items);
     }
