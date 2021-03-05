@@ -1,5 +1,4 @@
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,11 +20,22 @@ public class Main {
             itemsSizes.add(Integer.parseInt(line));
         }
 
-        BinPacking binPacking = new BinPacking(binCapacity, numberOfItem, itemsSizes);
+        BinPacking binPacking1 = new BinPacking(binCapacity, numberOfItem, itemsSizes);
+        BinPacking binPacking2 = new BinPacking(binCapacity, numberOfItem, itemsSizes);
+        BinPacking binPacking3 = new BinPacking(binCapacity, numberOfItem, itemsSizes);
 
-        System.out.println(binPacking.toStringItems());
-        System.out.println("Capacity " + binCapacity);
-        binPacking.FirstFitDecreasing();
-        System.out.println(binPacking.toStringBins());
+//        System.out.println(binPacking.toStringItems());
+//        System.out.println("Capacity " + binCapacity);
+        System.out.println("----> First fit decreasing : ");
+        SolutionGenerator.firstFitDecreasing(binPacking1);
+        System.out.println(binPacking1.toStringBins());
+
+        System.out.println("----> One item by bin : ");
+        SolutionGenerator.oneItemByBin(binPacking2);
+        System.out.println(binPacking2.toStringBins());
+
+        System.out.println("----> First fit randomly : ");
+        SolutionGenerator.firstFitRandomly(binPacking3);
+        System.out.println(binPacking3.toStringBins());
     }
 }

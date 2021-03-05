@@ -20,28 +20,6 @@ public class BinPacking {
         }
     }
 
-    public void FirstFitDecreasing() {
-        // Trie des items
-        ArrayList<Item> itemsSorted = new ArrayList<>(items);
-        Collections.sort(itemsSorted);
-
-        //Placement
-        Bin binCurrent = new Bin(binCapacity);
-        for (Item item : itemsSorted) {
-            if (bins.size() == 0 || binCurrent.getFreeSize() < item.getSize()) {
-                Bin bin = new Bin(binCapacity);
-                bin.getItems().add(item);
-                bin.setFreeSize(binCapacity - item.getSize());
-                bins.add(bin);
-                binCurrent = bin;
-            }
-            else if (binCurrent.getFreeSize() >= item.getSize()) {
-                binCurrent.getItems().add(item);
-                binCurrent.setFreeSize(binCurrent.getFreeSize() - item.getSize());
-            }
-        }
-    }
-
     public String toStringItems() {
         return items.toString();
     }
@@ -50,4 +28,51 @@ public class BinPacking {
         return bins.toString();
     }
 
+    public List<Bin> getBins() {
+        return bins;
+    }
+
+    public void setBins(List<Bin> bins) {
+        this.bins = bins;
+    }
+
+    public List<Item> getItems() {
+        return items;
+    }
+
+    public void setItems(List<Item> items) {
+        this.items = items;
+    }
+
+    public int getBinCapacity() {
+        return binCapacity;
+    }
+
+    public void setBinCapacity(int binCapacity) {
+        this.binCapacity = binCapacity;
+    }
+
+    public int getNbItem() {
+        return nbItem;
+    }
+
+    public void setNbItem(int nbItem) {
+        this.nbItem = nbItem;
+    }
+
+    public List<Boolean> getUsedBin() {
+        return usedBin;
+    }
+
+    public void setUsedBin(List<Boolean> usedBin) {
+        this.usedBin = usedBin;
+    }
+
+    public void sortItemsDecreasing() {
+        items.sort(Comparator.reverseOrder());
+    }
+
+    public void shuffleItems() {
+        Collections.shuffle(items);
+    }
 }

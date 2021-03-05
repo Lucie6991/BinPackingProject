@@ -38,9 +38,19 @@ public class Bin {
     }
 
     public String toString() {
-        String s = "";
+        StringBuilder s = new StringBuilder();
         for (Item item : items)
-            s = s+item.toString() + " ";
-        return s;
+            s.append(item.toString()).append(" ");
+        return s.toString();
+    }
+
+    /**
+     * Ajoute un item au bin, en mettant à jour sa capacité restante
+     *
+     * @param item l'item à ajouter
+     */
+    public void addItem(Item item) {
+        items.add(item);
+        setFreeSize(freeSize - item.getSize());
     }
 }
