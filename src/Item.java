@@ -1,5 +1,8 @@
 import java.util.Optional;
 
+/**
+ * Classe qui représente un item
+ */
 public class Item implements Comparable<Item> {
 
     private int size;
@@ -43,6 +46,6 @@ public class Item implements Comparable<Item> {
 
     @Override
     public int compareTo(Item o) {
-        return Integer.compare(o.size, size);
+        return Integer.compare(size, o.size);
     }
 }
