@@ -74,6 +74,18 @@ public class BinPacking {
     }
 
     /**
+     * Méthode qui permet de calculer une borne inférieure (nombre minimum) du nombre de bins
+     * @return le nombre de bin minimum
+     */
+    public int lowerBound() {
+        double total = 0.0;
+        for (Item item : items){
+            total += item.getSize();
+        }
+        return (int) Math.ceil(total/binCapacity);
+    }
+
+    /**
      * Méthode qui permet de classer les items dans le sens décroissant de leur taille
      */
     public void sortItemsDecreasing() {

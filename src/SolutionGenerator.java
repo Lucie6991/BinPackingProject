@@ -71,16 +71,21 @@ public class SolutionGenerator {
      */
     private static void firstFit() {
         // Insertion des bins avec la méthode FirstFit
-        Bin binCurrent = new Bin(binCapacity);
         for (Item item : items) {
-            if (bins.size() == 0 || binCurrent.getFreeSize() < item.getSize()) {
-                Bin bin = new Bin(binCapacity);
-                bin.addItem(item);
-                bins.add(bin);
-                binCurrent = bin;
-            } else if (binCurrent.getFreeSize() >= item.getSize()) {
-                binCurrent.addItem(item);
+            boolean done = false;
+            for (Bin bin : bins){
+                if (bin.getFreeSize() >= item.getSize()) {
+                    bin.addItem(item);
+                    done = true;
+                    break;
+                }
             }
+            if (!done) {
+                Bin binNew = new Bin(binCapacity);
+                binNew.addItem(item);
+                bins.add(binNew);
+            }
+
         }
     }
 }
