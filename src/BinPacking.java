@@ -1,12 +1,9 @@
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Classe qui représente un BinPacking avec ses bins et ses items
  */
-public class BinPacking {
+public class BinPacking implements Cloneable {
 
     private List<Bin> bins;
     private List<Item> items;
@@ -31,6 +28,10 @@ public class BinPacking {
 
     public String toStringBins() {
         return bins.toString();
+    }
+
+    public String toString() {
+        return toStringBins();
     }
 
     public List<Bin> getBins() {
@@ -75,14 +76,15 @@ public class BinPacking {
 
     /**
      * Méthode qui permet de calculer une borne inférieure (nombre minimum) du nombre de bins
+     *
      * @return le nombre de bin minimum
      */
     public int lowerBound() {
         double total = 0.0;
-        for (Item item : items){
+        for (Item item : items) {
             total += item.getSize();
         }
-        return (int) Math.ceil(total/binCapacity);
+        return (int) Math.ceil(total / binCapacity);
     }
 
     /**
@@ -97,5 +99,40 @@ public class BinPacking {
      */
     public void shuffleItems() {
         Collections.shuffle(items);
+    }
+
+    public void removeBin(Bin bin) {
+        bins.remove(bin);
+    }
+
+    @Override
+    protected BinPacking clone() {
+        BinPacking clone = null;
+        try {
+            clone = (BinPacking) super.clone();
+            // On clone les items
+            List<Item> i = new ArrayList<>();
+
+            // On clone les bins
+            List<Bin> b = new ArrayList<>();
+            for (Bin bin : bins) {
+                Bin cloneBin = new Bin(bin.getSize());
+                for(Item item: bin.getItems()) {
+                    // On ajoute les bons items au bon bins, puis les ajoute à la liste des items clonés
+                    Item cloneItem = new Item(item.getSize());
+                    i.add(cloneItem);
+                    cloneBin.addItem(cloneItem);
+                    cloneItem.setBin(Optional.of(cloneBin));
+                }
+                b.add(cloneBin);
+            }
+            clone.items = i;
+            clone.bins = b;
+            clone.binCapacity = binCapacity;
+            clone.nbItem = nbItem;
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return clone;
     }
 }
