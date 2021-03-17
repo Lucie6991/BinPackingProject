@@ -3,7 +3,7 @@ import java.util.Optional;
 /**
  * Classe qui représente les opérateurs de voisinage
  */
-public enum NeighbourhoodOperator {
+public enum NeighborhoodOperator {
     RELOCATE, EXCHANGE;
 
     /**
@@ -56,6 +56,7 @@ public enum NeighbourhoodOperator {
                 bin2.removeItem(item2);
                 bin1.addItem(item2);
                 item2.setBin(Optional.of(bin1));
+                return Optional.of(binPacking);
             }
         }
         // Il n'y a pas eu de voisinage créé
