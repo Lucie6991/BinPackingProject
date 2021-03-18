@@ -1,20 +1,58 @@
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Metaheuristic {
 
     private final List<NeighborhoodOperator> neighborhoodsOperators;
+    private final int maxIter;
+    private final int tabuListSize = 2;
 
-    public Metaheuristic(List<NeighborhoodOperator> neighborhoodsOperators) {
+    public Metaheuristic(List<NeighborhoodOperator> neighborhoodsOperators, int maxIter) {
         this.neighborhoodsOperators = neighborhoodsOperators;
+        this.maxIter = maxIter;
     }
 
     public void simulatedAnnealing(BinPacking initialSolution) {
         // TODO : RECUIT SIMULE
     }
 
-    public void tabuSearch(BinPacking initialSolution) {
+    public BinPacking tabuSearch(BinPacking initialSolution) {
         // TODO : METHODE TABOU
-        System.out.println(Arrays.toString(getNeighborhood(initialSolution).toArray()));
+        BinPacking solutionMin = initialSolution;
+        int nbBinsMin = initialSolution.getBins().size();
+        List<BinPacking> tabuList = new ArrayList<>();
+        BinPacking actualBin = initialSolution;
+        BinPacking nextBin;
+        for (int i = 0; i < maxIter; i++) {
+            List<BinPacking> neighborhood = getNeighborhood(actualBin);
+            // On enlève ceux qui sont dans la TabuList (identiques)
+            List<BinPacking> C = neighborhood.stream().filter(neighbour -> {
+                for (BinPacking m : tabuList) {
+                    if (m.isIdenticTo(neighbour)) {
+                        return false;
+                    }
+                }
+                return true;
+            }).collect(Collectors.toList());
+            nextBin = C.stream()
+                    .min(Comparator.comparing( bin -> bin.getBins().size()))
+                    .get();
+
+            int delta = nextBin.getBins().size() - actualBin.getBins().size();
+            if (delta >= 0) {
+                // On l'ajoute à la TabuList, mais si elle est remplie, on supprime le plus ancien.
+                if (tabuList.size() == tabuListSize) {
+                    tabuList.remove(0);
+                }
+                tabuList.add(actualBin);
+            }
+            // Mise à jour du minimum
+            solutionMin = nextBin.getBins().size() < nbBinsMin ? nextBin : solutionMin;
+            nbBinsMin = Math.min(nextBin.getBins().size(), nbBinsMin);
+            // On recommence avec le nouveau bin
+            actualBin = nextBin;
+        }
+        return solutionMin;
     }
     /**
      * Méthode qui permet de récupérer toutes les solutions voisine à une solution donnée.
@@ -49,7 +87,7 @@ public class Metaheuristic {
             for (int binIndex = 0; binIndex < solution.getBins().size(); binIndex++) {
                 // On copie le binPacking pour lui appliquer la méthode relocate
                 neighbour = solution.clone();
-                Optional<BinPacking> binPackingOpt = binPackingOpt = NeighborhoodOperator.relocateItem(neighbour, itemIndex, binIndex);
+                Optional<BinPacking> binPackingOpt = NeighborhoodOperator.relocateItem(neighbour, itemIndex, binIndex);
                 binPackingOpt.ifPresent(neighbours::add);
             }
         }

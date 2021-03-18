@@ -18,12 +18,12 @@ public class Main {
         // On crée une métaheuristique
         List<NeighborhoodOperator> operators = new ArrayList<>();
         //operators.add(NeighborhoodOperator.RELOCATE);
-        operators.add(NeighborhoodOperator.EXCHANGE);
-        Metaheuristic metaheuristic = new Metaheuristic(operators);
+        operators.add(NeighborhoodOperator.RELOCATE);
+        Metaheuristic metaheuristic = new Metaheuristic(operators, 10);
 
         System.out.println("----> First fit decreasing : ");
-        SolutionGenerator.firstFitDecreasing(binPacking2);
-        metaheuristic.tabuSearch(binPacking2);
+        SolutionGenerator.oneItemByBin(binPacking2);
+        System.out.println(metaheuristic.tabuSearch(binPacking2));
         System.out.println(binPacking2.toStringBins());
 
 //        System.out.println("----> One item by bin : ");

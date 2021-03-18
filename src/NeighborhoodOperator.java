@@ -26,8 +26,8 @@ public enum NeighborhoodOperator {
                 binOpt.ifPresent(binItem -> {
                     binItem.removeItem(item);
                     // Si le bin n'a plus d'items, on le supprime de la liste
-                    if (bin.getFreeSize() == bin.getSize()) {
-                        binPacking.removeBin(bin);
+                    if (binItem.getFreeSize() == binItem.getSize()) {
+                        binPacking.removeBin(binItem);
                     }
                 });
                 item.setBin(Optional.of(bin));

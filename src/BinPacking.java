@@ -135,4 +135,10 @@ public class BinPacking implements Cloneable {
         }
         return clone;
     }
+
+    public boolean isIdenticTo(BinPacking binPacking) {
+        // Comparer les contenus de chaque bin
+        // Ne pas prendre en compte l'ordre des bins et l'ordre ni l'ordre des items dans chaque bin
+        return false;
+    }
 }
