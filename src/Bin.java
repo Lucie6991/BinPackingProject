@@ -58,6 +58,17 @@ public class Bin {
     }
 
     /**
+     * Ajoute un item au bin à un index donné, en mettant à jour sa capacité restante
+     *
+     * @param item  l'item à ajouter
+     * @param index l'index à être placé
+     */
+    public void addItem(Item item, int index) {
+        items.add(index, item);
+        setFreeSize(freeSize - item.getSize());
+    }
+
+    /**
      * Enlève un item au bin, en mettant à jour sa capacité restante.
      *
      * @param item l'item à enlever

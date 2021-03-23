@@ -1,23 +1,35 @@
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Random;
+
+import static java.lang.Math.min;
+import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.toList;
 
 public class Metaheuristic {
 
     private final List<NeighborhoodOperator> neighborhoodsOperators;
     private final int maxIter;
-    private final int tabuListSize = 2;
+    private final int tabuListSize;
 
-    public Metaheuristic(List<NeighborhoodOperator> neighborhoodsOperators, int maxIter) {
+    public Metaheuristic(List<NeighborhoodOperator> neighborhoodsOperators, int maxIter, int tabuListSize) {
         this.neighborhoodsOperators = neighborhoodsOperators;
         this.maxIter = maxIter;
+        this.tabuListSize = tabuListSize;
     }
 
     public void simulatedAnnealing(BinPacking initialSolution) {
         // TODO : RECUIT SIMULE
     }
 
+    /**
+     * Représente la méthode de recherche Tabou avec une taille de la liste Tabou fixée, et un nombre maxiumum d'itération
+     *
+     * @param initialSolution la solution de départ
+     * @return la solution minimale trouvée une fois le nombre maximum d'itération réalisé.
+     */
     public BinPacking tabuSearch(BinPacking initialSolution) {
-        // TODO : METHODE TABOU
         BinPacking solutionMin = initialSolution;
         int nbBinsMin = initialSolution.getBins().size();
         List<BinPacking> tabuList = new ArrayList<>();
@@ -25,7 +37,7 @@ public class Metaheuristic {
         BinPacking nextBin;
         for (int i = 0; i < maxIter; i++) {
             List<BinPacking> neighborhood = getNeighborhood(actualBin);
-            // On enlève ceux qui sont dans la TabuList (identiques)
+            // On enlève ceux qui sont dans la TabuList (en comparant les valeurs et non les adresses)
             List<BinPacking> C = neighborhood.stream().filter(neighbour -> {
                 for (BinPacking m : tabuList) {
                     if (m.isIdenticTo(neighbour)) {
@@ -33,9 +45,13 @@ public class Metaheuristic {
                     }
                 }
                 return true;
-            }).collect(Collectors.toList());
+            }).collect(toList());
+            if (C.isEmpty()) {
+                // S'il n'a pas de voisins, c'est fini on retourne la meilleure solution
+                return solutionMin;
+            }
             nextBin = C.stream()
-                    .min(Comparator.comparing( bin -> bin.getBins().size()))
+                    .min(comparing(bin -> bin.getBins().size()))
                     .get();
 
             int delta = nextBin.getBins().size() - actualBin.getBins().size();
@@ -48,12 +64,13 @@ public class Metaheuristic {
             }
             // Mise à jour du minimum
             solutionMin = nextBin.getBins().size() < nbBinsMin ? nextBin : solutionMin;
-            nbBinsMin = Math.min(nextBin.getBins().size(), nbBinsMin);
+            nbBinsMin = min(nextBin.getBins().size(), nbBinsMin);
             // On recommence avec le nouveau bin
             actualBin = nextBin;
         }
         return solutionMin;
     }
+
     /**
      * Méthode qui permet de récupérer toutes les solutions voisine à une solution donnée.
      * L'opérateur de voisinage est choisi aléatoirement dans la liste des opérateurs.

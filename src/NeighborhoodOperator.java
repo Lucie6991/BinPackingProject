@@ -49,12 +49,14 @@ public enum NeighborhoodOperator {
             Bin bin2 = binOpt2.get();
             // On vérifie si le changement va être possible en terme de tailles disponibles
             if(bin1.getFreeSize() + item1.getSize() >= item2.getSize() && bin2.getFreeSize() + item2.getSize() >= item1.getSize()) {
-                // On applique le changement
+                // On applique le changement en gardant les places
+                int indexItem1 = bin1.getItems().indexOf(item1);
+                int indexItem2 = bin2.getItems().indexOf(item2);
                 bin1.removeItem(item1);
-                bin2.addItem(item1);
+                bin2.addItem(item1, indexItem2);
                 item1.setBin(Optional.of(bin2));
                 bin2.removeItem(item2);
-                bin1.addItem(item2);
+                bin1.addItem(item2, indexItem1);
                 item2.setBin(Optional.of(bin1));
                 return Optional.of(binPacking);
             }

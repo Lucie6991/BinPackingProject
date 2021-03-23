@@ -117,7 +117,7 @@ public class BinPacking implements Cloneable {
             List<Bin> b = new ArrayList<>();
             for (Bin bin : bins) {
                 Bin cloneBin = new Bin(bin.getSize());
-                for(Item item: bin.getItems()) {
+                for (Item item : bin.getItems()) {
                     // On ajoute les bons items au bon bins, puis les ajoute à la liste des items clonés
                     Item cloneItem = new Item(item.getSize());
                     i.add(cloneItem);
@@ -136,9 +136,38 @@ public class BinPacking implements Cloneable {
         return clone;
     }
 
+    /**
+     * Compare deux bins selon les valeurs des items contenus dans chacun des bins, et non leur adresse
+     *
+     * @param binPacking le binPacking à comparer
+     * @return true s'ils ont autant de bins et composés de la même manière, false sinon
+     */
     public boolean isIdenticTo(BinPacking binPacking) {
-        // Comparer les contenus de chaque bin
-        // Ne pas prendre en compte l'ordre des bins et l'ordre ni l'ordre des items dans chaque bin
+        if (this.getBins().size() == binPacking.getBins().size()) {
+            // Ils ont autant de bins: on les parcourt
+            for (int i = 0; i < this.getBins().size(); i++) {
+                Bin bin1 = this.getBins().get(i);
+                Bin bin2 = binPacking.getBins().get(i);
+                if (bin1.getFreeSize() == bin2.getFreeSize() && bin1.getItems().size() == bin2.getItems().size()) {
+                    // Ils ont autant d'items et de taille libre
+                    // On vérifie les valeurs des items
+                    for (int j = 0; j < bin1.getItems().size(); j++) {
+                        Item item1 = bin1.getItems().get(j);
+                        Item item2 = bin2.getItems().get(j);
+                        if (item1.getSize() == item2.getSize()) {
+                            // Si c'est le tout dernier item du dernier bin, on retourne true
+                            if (i == getBins().size() - 1 && j == bin1.getItems().size() - 1) {
+                                return true;
+                            }
+                        } else {
+                            return false;
+                        }
+                    }
+                } else {
+                    return false;
+                }
+            }
+        }
         return false;
     }
 }
