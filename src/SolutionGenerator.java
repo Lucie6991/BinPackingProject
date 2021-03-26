@@ -1,4 +1,5 @@
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Classe qui permet de générer des solutions alétaoires de BinPacking
@@ -73,9 +74,10 @@ public class SolutionGenerator {
         // Insertion des bins avec la méthode FirstFit
         for (Item item : items) {
             boolean done = false;
-            for (Bin bin : bins){
+            for (Bin bin : bins) {
                 if (bin.getFreeSize() >= item.getSize()) {
                     bin.addItem(item);
+                    item.setBin(Optional.of(bin));
                     done = true;
                     break;
                 }
@@ -83,6 +85,7 @@ public class SolutionGenerator {
             if (!done) {
                 Bin binNew = new Bin(binCapacity);
                 binNew.addItem(item);
+                item.setBin(Optional.of(binNew));
                 bins.add(binNew);
             }
 
