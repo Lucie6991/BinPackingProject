@@ -16,8 +16,8 @@ public class LinearProgram {
 
     public LinearProgram(BinPacking binPacking) {
         this.binPacking = binPacking;
-        numBins = binPacking.getBins().size();
         numItems = binPacking.getNbItem();
+        numBins = numItems;
         binCapacity = binPacking.getBinCapacity();
         for (Item item : binPacking.getItems()) {
             sizeItems.add(item.getSize());
@@ -68,7 +68,7 @@ public class LinearProgram {
             }
         }
 
-        // Xij <= Yj
+        // Xij <= Yj : forcé par les autres contraintes
 
 
         // Objectif : minimiser le nombre de bins
@@ -83,26 +83,20 @@ public class LinearProgram {
 
         // On vérifie si la solution est optimale
         if (resultStatus == MPSolver.ResultStatus.OPTIMAL) {
-            System.out.println(" Nombre de bins utilisés : " + objective.value());
-            int totalSize = 0;
             for (int j = 0; j < numBins; j++) {
                 if (y[j].solutionValue() == 1) {
-                    System.out.println("\nBin " + j + "\n");
-                    int binSize = 0;
+                    System.out.println("\nBin " + j + " : ");
                     for (int i = 0; i < numItems; i++) {
                         if (x[i][j].solutionValue() == 1) {
-                            System.out.println("Item " + i + " - weight: " + sizeItems.get(i));
-                            binSize += sizeItems.get(i);
+                            System.out.println("--> Item " + i + " = taille: " + sizeItems.get(i));
                         }
                     }
-                    System.out.println("Taille du bin : " + binSize);
-                    totalSize += binSize;
                 }
             }
-            System.out.println("\nTotal du bin packing : " + totalSize);
+            System.out.println("\nNombre de bins utilisés : " + objective.value());
         }
         else {
-            System.out.println(" Le problème n'a pas de solution optimale");
+            System.out.println("Le problème n'a pas de solution optimale");
         }
     }
 }
