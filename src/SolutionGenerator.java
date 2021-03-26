@@ -93,7 +93,6 @@ public class SolutionGenerator {
                 binNew.addItem(item);
                 bins.add(binNew);
             }
-
         }
     }
 }

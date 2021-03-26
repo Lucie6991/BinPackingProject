@@ -15,6 +15,7 @@ public enum NeighborhoodOperator {
      * @return un Optional du binPacking modifié, ou un Optional vide, s'il n'a pas été modifié
      */
     public static Optional<BinPacking> relocateItem(BinPacking binPacking, int itemIndex, int binIndex) {
+        // TODO : regarder si ajout d'un bin si pas la place dans la destination peut être intéressant
         Item item = binPacking.getItems().get(itemIndex);
         Bin bin = binPacking.getBins().get(binIndex);
         Optional<Bin> binOpt = item.getBin();
@@ -25,10 +26,11 @@ public enum NeighborhoodOperator {
                 bin.addItem(item);
                 binOpt.ifPresent(binItem -> {
                     binItem.removeItem(item);
-                    // Si le bin n'a plus d'items, on le supprime de la liste
-                    if (binItem.getFreeSize() == binItem.getSize()) {
-                        binPacking.removeBin(binItem);
-                    }
+                    // Si le bin n'a plus d'items, on ne le supprime pas de la liste, mais sa taille restante est sa capacité max.
+                    // On lui met sa transformation inverse de celle réalisée => Item dans son bin d'origine
+                    binPacking.addElementaryTransformation(NeighborhoodOperator.RELOCATE, new Integer[] {itemIndex, binPacking.getBins().indexOf(binItem)});
+                    // TODO : a voir si on lui met aussi dans le meme ordre
+                    //binPacking.setNeighborhoodOperatorMap(NeighborhoodOperator.RELOCATE, new Integer[] {itemIndex, binPacking.getBins().indexOf(bin)});
                 });
                 item.setBin(Optional.of(bin));
 
@@ -41,6 +43,14 @@ public enum NeighborhoodOperator {
         return Optional.empty();
     }
 
+    /**
+     * Méthode représentant l'opérateur de voisinage qui échange deux items
+     *
+     * @param binPacking le binPacking à modifier
+     * @param itemIndex1  l'index de l'item source à déplacer
+     * @param itemIndex2  l'index de l'item 2 à déplacer
+     * @return un Optional du binPacking modifié, ou un Optional vide, s'il n'a pas été modifié
+     */
     public static Optional<BinPacking> exchangeItems(BinPacking binPacking, int itemIndex1, int itemIndex2) {
         Item item1 = binPacking.getItems().get(itemIndex1);
         Item item2 = binPacking.getItems().get(itemIndex2);
@@ -64,6 +74,10 @@ public enum NeighborhoodOperator {
 
                 //Calcul de la nouvelle fitness
                 binPacking.setFitness();
+                // On lui met sa transformation inverse de celle réalisée => Item1 avec l'item2 en partant du bin 2 au bin 1
+                binPacking.addElementaryTransformation(NeighborhoodOperator.EXCHANGE, new Integer[] {itemIndex1, itemIndex2, binPacking.getBins().indexOf(bin2), binPacking.getBins().indexOf(bin1)});
+                // TODO : a voir si on lui met aussi dans le meme ordre
+                //binPacking.setNeighborhoodOperatorMap(NeighborhoodOperator.EXCHANGE, new Integer[] {itemIndex1, itemIndex2, binPacking.getBins().indexOf(bin1), binPacking.getBins().indexOf(bin2)});
                 return Optional.of(binPacking);
             }
         }
