@@ -13,16 +13,19 @@ public class Main {
 
         //System.out.println(binPacking1.lowerBound());
 
-        System.out.println("----> First fit decreasing : ");
+        /*System.out.println("----> First fit decreasing : ");
         SolutionGenerator.firstFitDecreasing(binPacking1);
-        System.out.println(binPacking1.toStringBins());
+        System.out.println(binPacking1.toStringBins());*/
 
 //        System.out.println("----> One item by bin : ");
 //        SolutionGenerator.oneItemByBin(binPacking2);
 //        System.out.println(binPacking2.toStringBins());
 
-        System.out.println("----> First fit randomly : ");
+        /*System.out.println("----> First fit randomly : ");
         SolutionGenerator.firstFitRandomly(binPacking3);
-        System.out.println(binPacking3.toStringBins());
+        System.out.println(binPacking3.toStringBins());*/
+
+        LinearProgram linearProgram = new LinearProgram(binPacking1);
+        linearProgram.run();
     }
 }

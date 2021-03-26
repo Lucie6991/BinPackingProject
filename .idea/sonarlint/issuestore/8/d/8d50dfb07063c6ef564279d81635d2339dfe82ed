@@ -1,0 +1,13 @@
+
+f
+java:S1128"IRemove this unused import 'com.google.ortools.linearsolver.MPConstraint'.(—”¥ß8¶¨ÿƒ/
+X
+java:S1128"6Remove this unused import 'com.google.ortools.Loader'.(ûç™®øÿÿÿÿ8ëÁ«€„/
+g
+java:S1128"ERemove this unused import 'com.google.ortools.linearsolver.MPSolver'.(û¿Óúÿÿÿÿ8¶¨ÿƒ/
+]
+java:S2094"BRemove this empty class, write its code or make it an "interface".(ÒÃ…·øÿÿÿÿ
+e
+java:S1128"HRemove this unused import 'com.google.ortools.linearsolver.MPObjective'.(´êíí8¶¨ÿƒ/
+i
+java:S1128"GRemove this unused import 'com.google.ortools.linearsolver.MPVariable'.(à£Ü‡ùÿÿÿÿ8¶¨ÿƒ/

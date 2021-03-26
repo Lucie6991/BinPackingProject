@@ -1,0 +1,12 @@
+
+Z	java:S106"9Replace this use of System.out or System.err by a logger.(¦®éøÿÿÿÿ8éõÀ‚/
+M
+java:S1481"0Remove this unused "binPacking2" local variable.(’×³ş8ß»ø§ƒ/
+X	java:S125"<This block of commented-out lines of code should be removed.(úæºû8ß»ø§ƒ/
+Z	java:S106"9Replace this use of System.out or System.err by a logger.(ü³Ê“ıÿÿÿÿ8éõÀ‚/
+Q	java:S125"<This block of commented-out lines of code should be removed.(òô
+\
+java:S1854"?Remove this useless assignment to local variable "binPacking2".(’×³ş8ß»ø§ƒ/
+]	java:S125"<This block of commented-out lines of code should be removed.(•üšùÿÿÿÿ8—ğôÀ‚/
+T	java:S106"9Replace this use of System.out or System.err by a logger.(½‘Ò78éõÀ‚/
+Z	java:S106"9Replace this use of System.out or System.err by a logger.(¼ÓÈÍúÿÿÿÿ8éõÀ‚/
