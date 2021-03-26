@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="java">
+    <CLASSES />
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$USER_HOME$/Downloads/or-tools-8.2/cmake/samples/java/src/main/java" />
+      <root url="file://$USER_HOME$/Downloads/or-tools-8.2/cmake/samples/java/src/test/java" />
+      <root url="file://$USER_HOME$/Downloads/or-tools-8.2/ortools/java" />
+    </SOURCES>
+  </library>
+</component>

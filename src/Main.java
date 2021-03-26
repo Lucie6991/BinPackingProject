@@ -32,6 +32,14 @@ public class Main {
 //        SolutionGenerator.oneItemByBin(binPacking2);
 //        System.out.println(binPacking2.toStringBins());
 
+
+        /*System.out.println("----> First fit randomly : ");
+        SolutionGenerator.firstFitRandomly(binPacking3);
+        System.out.println(binPacking3.toStringBins());*/
+
+        LinearProgram linearProgram = new LinearProgram(binPacking1);
+        linearProgram.run();
+
 //        System.out.println("----> First fit randomly : ");
 //        SolutionGenerator.firstFitRandomly(binPacking3);
 //        System.out.println(binPacking3.toStringBins());
