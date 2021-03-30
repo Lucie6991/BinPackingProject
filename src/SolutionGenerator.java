@@ -1,8 +1,7 @@
 import java.util.List;
-import java.util.Optional;
 
 /**
- * Classe qui permet de générer des solutions alétaoires de BinPacking
+ * Classe qui permet de générer des solutions alétoires de BinPacking
  */
 public class SolutionGenerator {
 
@@ -23,6 +22,8 @@ public class SolutionGenerator {
             newBin.addItem(item);
             bins.add(newBin);
         }
+        //Calcul de la fitness associé à ce BinPacking
+        binPacking.setFitness();
     }
 
     /**
@@ -48,6 +49,9 @@ public class SolutionGenerator {
 
         // Insertion dans des bins avec la méthode FirstFit
         firstFit();
+
+        //Calcul de la fitness associé à ce BinPacking
+        binPacking.setFitness();
     }
 
     /**
@@ -64,6 +68,9 @@ public class SolutionGenerator {
 
         // Insertion dans des bins avec la méthode FirstFit
         firstFit();
+
+        //Calcul de la fitness associé à ce BinPacking
+        binPacking.setFitness();
     }
 
     /**
@@ -77,7 +84,6 @@ public class SolutionGenerator {
             for (Bin bin : bins) {
                 if (bin.getFreeSize() >= item.getSize()) {
                     bin.addItem(item);
-                    item.setBin(Optional.of(bin));
                     done = true;
                     break;
                 }
@@ -85,7 +91,6 @@ public class SolutionGenerator {
             if (!done) {
                 Bin binNew = new Bin(binCapacity);
                 binNew.addItem(item);
-                item.setBin(Optional.of(binNew));
                 bins.add(binNew);
             }
 

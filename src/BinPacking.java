@@ -10,6 +10,7 @@ public class BinPacking implements Cloneable {
     private int binCapacity;
     private int nbItem;
     private List<Boolean> usedBin;
+    private int fitness;
 
     public BinPacking(int binCapacity, int nbItem, List<Integer> itemsSizes) {
         this.binCapacity = binCapacity;
@@ -20,6 +21,7 @@ public class BinPacking implements Cloneable {
         for (int itemSize : itemsSizes) {
             items.add(new Item(itemSize));
         }
+        setFitness();
     }
 
     public String toStringItems() {
@@ -30,8 +32,11 @@ public class BinPacking implements Cloneable {
         return bins.toString();
     }
 
+    public String toStringFitness() { return "Fitness : " + this.fitness;}
+
     public String toString() {
-        return toStringBins();
+        return toStringBins() + "\n" + toStringFitness();
+
     }
 
     public List<Bin> getBins() {
@@ -72,6 +77,16 @@ public class BinPacking implements Cloneable {
 
     public void setUsedBin(List<Boolean> usedBin) {
         this.usedBin = usedBin;
+    }
+
+    public int getFitness() {
+        return fitness;
+    }
+
+    public void setFitness() {
+        this.fitness = getBins().stream()
+                .mapToInt(b-> (int) Math.pow(binCapacity - b.getFreeSize(),2))
+                .sum();
     }
 
     /**
@@ -170,4 +185,6 @@ public class BinPacking implements Cloneable {
         }
         return false;
     }
+
+
 }

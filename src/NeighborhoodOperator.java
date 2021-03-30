@@ -31,6 +31,9 @@ public enum NeighborhoodOperator {
                     }
                 });
                 item.setBin(Optional.of(bin));
+
+                //Calcul de la nouvelle fitness
+                binPacking.setFitness();
                 return Optional.of(binPacking);
             }
         }
@@ -58,6 +61,9 @@ public enum NeighborhoodOperator {
                 bin2.removeItem(item2);
                 bin1.addItem(item2, indexItem1);
                 item2.setBin(Optional.of(bin1));
+
+                //Calcul de la nouvelle fitness
+                binPacking.setFitness();
                 return Optional.of(binPacking);
             }
         }

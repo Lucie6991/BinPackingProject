@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Classe qui représente un Bin
@@ -55,6 +56,7 @@ public class Bin {
     public void addItem(Item item) {
         items.add(item);
         setFreeSize(freeSize - item.getSize());
+        item.setBin(Optional.of(this));
     }
 
     /**
@@ -65,6 +67,7 @@ public class Bin {
      */
     public void addItem(Item item, int index) {
         items.add(index, item);
+        item.setBin(Optional.of(this));
         setFreeSize(freeSize - item.getSize());
     }
 
@@ -76,5 +79,6 @@ public class Bin {
     public void removeItem(Item item) {
         items.remove(item);
         setFreeSize(freeSize + item.getSize());
+        item.setBin(Optional.empty());
     }
 }
