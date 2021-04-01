@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Classe qui représente un BinPacking avec ses bins et ses items
@@ -9,7 +10,11 @@ public class BinPacking implements Cloneable {
     private List<Item> items;
     private int binCapacity;
     private int nbItem;
-    private List<Boolean> usedBin;
+
+    /**
+     * La liste des transformations élémentaires utilisées, en tant qu'Optional
+     */
+    private Optional<List<Map<NeighborhoodOperator, Integer[]>>> elementaryTransformationListOpt;
     private int fitness;
 
     public BinPacking(int binCapacity, int nbItem, List<Integer> itemsSizes) {
@@ -17,10 +22,10 @@ public class BinPacking implements Cloneable {
         this.nbItem = nbItem;
         this.items = new ArrayList<>();
         this.bins = new ArrayList<>();
-        this.usedBin = new ArrayList<>();
         for (int itemSize : itemsSizes) {
             items.add(new Item(itemSize));
         }
+        this.elementaryTransformationListOpt = Optional.empty();
         setFitness();
     }
 
@@ -28,11 +33,18 @@ public class BinPacking implements Cloneable {
         return items.toString();
     }
 
+    /**
+     * Affiche les bins en prenant en compte que ceux non vides
+     *
+     * @return l'affichage des bins non vides
+     */
     public String toStringBins() {
-        return bins.toString();
+        return getNotEmptyBins().toString();
     }
 
-    public String toStringFitness() { return "Fitness : " + this.fitness;}
+    public String toStringFitness() {
+        return "Fitness : " + this.fitness;
+    }
 
     public String toString() {
         return toStringBins() + "\n" + toStringFitness();
@@ -71,22 +83,23 @@ public class BinPacking implements Cloneable {
         this.nbItem = nbItem;
     }
 
-    public List<Boolean> getUsedBin() {
-        return usedBin;
-    }
-
-    public void setUsedBin(List<Boolean> usedBin) {
-        this.usedBin = usedBin;
-    }
-
     public int getFitness() {
         return fitness;
     }
 
     public void setFitness() {
         this.fitness = getBins().stream()
-                .mapToInt(b-> (int) Math.pow(binCapacity - b.getFreeSize(),2))
+                .mapToInt(b -> (int) Math.pow(binCapacity - b.getFreeSize(), 2))
                 .sum();
+    }
+
+    /**
+     * Permet de récupérer les bins non vides
+     *
+     * @return les bins non vides
+     */
+    private List<Bin> getNotEmptyBins() {
+        return bins.stream().filter(b -> !b.getItems().isEmpty()).collect(Collectors.toList());
     }
 
     /**
@@ -116,10 +129,6 @@ public class BinPacking implements Cloneable {
         Collections.shuffle(items);
     }
 
-    public void removeBin(Bin bin) {
-        bins.remove(bin);
-    }
-
     @Override
     protected BinPacking clone() {
         BinPacking clone = null;
@@ -127,24 +136,29 @@ public class BinPacking implements Cloneable {
             clone = (BinPacking) super.clone();
             // On clone les items
             List<Item> i = new ArrayList<>();
+            items.forEach(item -> i.add(new Item(item.getSize())));
 
-            // On clone les bins
             List<Bin> b = new ArrayList<>();
             for (Bin bin : bins) {
                 Bin cloneBin = new Bin(bin.getSize());
                 for (Item item : bin.getItems()) {
-                    // On ajoute les bons items au bon bins, puis les ajoute à la liste des items clonés
-                    Item cloneItem = new Item(item.getSize());
-                    i.add(cloneItem);
-                    cloneBin.addItem(cloneItem);
-                    cloneItem.setBin(Optional.of(cloneBin));
+                    // Récupère l'index de l'item
+                    int indexItem = items.indexOf(item);
+                    // Récupère l'item dans la nouvelle liste des items
+                    Item itemClone = i.get(indexItem);
+                    // Ajoute cet item au nouveau bin
+                    cloneBin.addItem(itemClone);
+                    itemClone.setBin(Optional.of(cloneBin));
                 }
                 b.add(cloneBin);
             }
+
             clone.items = i;
             clone.bins = b;
             clone.binCapacity = binCapacity;
             clone.nbItem = nbItem;
+            clone.elementaryTransformationListOpt = Optional.empty();
+
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }
@@ -152,39 +166,26 @@ public class BinPacking implements Cloneable {
     }
 
     /**
-     * Compare deux bins selon les valeurs des items contenus dans chacun des bins, et non leur adresse
+     * Permet de récupérer la liste des transformations élémentaires
      *
-     * @param binPacking le binPacking à comparer
-     * @return true s'ils ont autant de bins et composés de la même manière, false sinon
+     * @return la liste des transformations élémentaires en tant qu'Optional
      */
-    public boolean isIdenticTo(BinPacking binPacking) {
-        if (this.getBins().size() == binPacking.getBins().size()) {
-            // Ils ont autant de bins: on les parcourt
-            for (int i = 0; i < this.getBins().size(); i++) {
-                Bin bin1 = this.getBins().get(i);
-                Bin bin2 = binPacking.getBins().get(i);
-                if (bin1.getFreeSize() == bin2.getFreeSize() && bin1.getItems().size() == bin2.getItems().size()) {
-                    // Ils ont autant d'items et de taille libre
-                    // On vérifie les valeurs des items
-                    for (int j = 0; j < bin1.getItems().size(); j++) {
-                        Item item1 = bin1.getItems().get(j);
-                        Item item2 = bin2.getItems().get(j);
-                        if (item1.getSize() == item2.getSize()) {
-                            // Si c'est le tout dernier item du dernier bin, on retourne true
-                            if (i == getBins().size() - 1 && j == bin1.getItems().size() - 1) {
-                                return true;
-                            }
-                        } else {
-                            return false;
-                        }
-                    }
-                } else {
-                    return false;
-                }
-            }
-        }
-        return false;
+    public Optional<List<Map<NeighborhoodOperator, Integer[]>>> getElementaryTransformationListOpt() {
+        return elementaryTransformationListOpt;
     }
 
-
+    /**
+     * Permet d'ajouter des transformations élémentaires à la liste de ses transformations,
+     * ou de créer la liste en la remplissant si elle n'existe pas
+     *
+     * @param operator   l'opérateur de voisinage utilisé
+     * @param parameters les paramètres utilisés pour ce voisinage
+     */
+    public void addElementaryTransformation(NeighborhoodOperator operator, Integer[] parameters) {
+        List<Map<NeighborhoodOperator, Integer[]>> listOfMap = elementaryTransformationListOpt.isEmpty() ? new ArrayList<>() : elementaryTransformationListOpt.get();
+        HashMap<NeighborhoodOperator, Integer[]> map = new HashMap<>();
+        map.put(operator, parameters);
+        listOfMap.add(map);
+        this.elementaryTransformationListOpt = Optional.of(listOfMap);
+    }
 }
