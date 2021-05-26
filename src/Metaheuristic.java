@@ -9,6 +9,7 @@ public class Metaheuristic {
     private final List<NeighborhoodOperator> neighborhoodsOperators;
     private final int maxIter;
     private final int tabuListSize;
+    private boolean symmetricalElementaryTransformations;
 
     public Metaheuristic(List<NeighborhoodOperator> neighborhoodsOperators, int maxIter, int tabuListSize) {
         this.neighborhoodsOperators = neighborhoodsOperators;
@@ -21,13 +22,14 @@ public class Metaheuristic {
     }
 
     /**
-     * Représente la méthode de recherche Tabou avec une taille de la liste Tabou fixée, et un nombre maxiumum d'itération
+     * Représente la méthode de recherche Tabou avec une taille de la liste Tabou fixée, et un nombre maximum d'itération
      *
      * @param initialSolution la solution de départ
      * @return la solution minimale trouvée une fois le nombre maximum d'itération réalisé.
      */
-    public BinPacking tabuSearch(BinPacking initialSolution) {
+    public BinPacking tabuSearch(BinPacking initialSolution, boolean symmetricalElementaryTransformations) {
         // Initialisation des variables
+        this.symmetricalElementaryTransformations = symmetricalElementaryTransformations;
         List<Map<NeighborhoodOperator, Integer[]>> T = new ArrayList<>();
         BinPacking solutionMin = initialSolution;
         int nbBinsMin = initialSolution.getBins().size();
@@ -37,7 +39,7 @@ public class Metaheuristic {
             List<BinPacking> C = getNeighborhoodWithoutExceptions(actualBin, T);
             // On enlève ceux qui sont dans la TabuList (en comparant les valeurs et non les adresses)
             if (C.isEmpty()) {
-                // S'il n'a pas de voisins, c'est fini on retourne la meilleure solution
+                // S'il n'a pas de voisin, c'est fini on retourne la meilleure solution
                 return solutionMin;
             }
             // On choisi le nextBin avec le max de fitness
@@ -48,11 +50,14 @@ public class Metaheuristic {
             // delta est la différence de fitness
             int delta = nextBin.getFitness() - actualBin.getFitness();
             if (delta >= 0) {
-                // On l'ajoute à la TabuList, mais si elle est remplie, on supprime le plus ancien.
-                if (T.size() == tabuListSize) {
+                // On l'ajoute à la TabuList, mais si elle est remplie, on supprime le plus ancien
+                // (suivant la règle des transformations élémentaires symétriques)
+                if (!symmetricalElementaryTransformations && T.size() == tabuListSize) {
                     T.remove(0);
-                    // TODO : à rajouter si on met les transformation élémentaires dans les 2 sens => aussi mettre tabuListSize *2
-                    //T.remove(0);
+                }
+                else if (symmetricalElementaryTransformations && T.size() == tabuListSize * 2) {
+                    T.remove(0);
+                    T.remove(0);
                 }
                 T.addAll(nextBin.getElementaryTransformationListOpt().get());
             }
@@ -107,7 +112,7 @@ public class Metaheuristic {
                 if (exceptions.stream().noneMatch(e -> e[0] == finalItemIndex && e[1] == finalBinIndex)) {
                     // On copie le binPacking pour lui appliquer la méthode relocate
                     neighbour = solution.clone();
-                    Optional<BinPacking> binPackingOpt = NeighborhoodOperator.relocateItem(neighbour, itemIndex, binIndex);
+                    Optional<BinPacking> binPackingOpt = NeighborhoodOperator.relocateItem(neighbour, itemIndex, binIndex, symmetricalElementaryTransformations);
                     binPackingOpt.ifPresent(neighbours::add);
                 }
             }
@@ -144,7 +149,7 @@ public class Metaheuristic {
                 })) {
                     // On copie le binPacking pour lui appliquer la méthode relocate
                     neighbour = solution.clone();
-                    Optional<BinPacking> binPackingOpt = NeighborhoodOperator.exchangeItems(neighbour, itemIndex1, itemIndex2);
+                    Optional<BinPacking> binPackingOpt = NeighborhoodOperator.exchangeItems(neighbour, itemIndex1, itemIndex2, symmetricalElementaryTransformations);
                     binPackingOpt.ifPresent(neighbours::add);
                 }
             }
