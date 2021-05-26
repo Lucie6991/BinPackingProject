@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -65,6 +66,25 @@ public class SolutionGenerator {
 
         // Ordonne les items dans l'ordre décroissant
         binPacking.sortItemsDecreasing();
+
+        // Insertion dans des bins avec la méthode FirstFit
+        firstFit();
+
+        //Calcul de la fitness associé à ce BinPacking
+        binPacking.setFitness();
+    }
+
+    /**
+     * Méthode qui permet de générer la solution firstFit avec les items
+     * classés selon un ordre croissant de leur taille.
+     *
+     * @param binPacking le binPacking
+     */
+    public static void firstFitIncreasing(BinPacking binPacking) {
+        setUpElements(binPacking);
+
+        // Ordonne les items dans l'ordre décroissant
+        binPacking.sortItemsIncreasing();
 
         // Insertion dans des bins avec la méthode FirstFit
         firstFit();

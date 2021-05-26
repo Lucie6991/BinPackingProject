@@ -123,10 +123,25 @@ public class BinPacking implements Cloneable {
     }
 
     /**
+     * Méthode qui permet de classer les items dans le sens croissant de leur taille
+     */
+    public void sortItemsIncreasing() {
+        items.sort(Comparator.naturalOrder());
+    }
+
+    /**
      * Méthode qui permet de classer les items selon un ordre aléatoire
      */
     public void shuffleItems() {
         Collections.shuffle(items);
+    }
+
+    /**
+     * Permet d'obtenir la solution c'est-à-dire le nombre de bins utilisés
+     * @return le nombre de bins utilisés
+     */
+    public int getSolutionCount() {
+        return getNotEmptyBins().size();
     }
 
     @Override

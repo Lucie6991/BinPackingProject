@@ -14,8 +14,7 @@ public enum NeighborhoodOperator {
      * @param binIndex   l'index du bin de destination
      * @return un Optional du binPacking modifié, ou un Optional vide, s'il n'a pas été modifié
      */
-    public static Optional<BinPacking> relocateItem(BinPacking binPacking, int itemIndex, int binIndex) {
-        // TODO : regarder si ajout d'un bin si pas la place dans la destination peut être intéressant
+    public static Optional<BinPacking> relocateItem(BinPacking binPacking, int itemIndex, int binIndex, boolean symmetricalElementaryTransformations) {
         Item item = binPacking.getItems().get(itemIndex);
         Bin bin = binPacking.getBins().get(binIndex);
         Optional<Bin> binOpt = item.getBin();
@@ -29,8 +28,10 @@ public enum NeighborhoodOperator {
                     // Si le bin n'a plus d'items, on ne le supprime pas de la liste, mais sa taille restante est sa capacité max.
                     // On lui met sa transformation inverse de celle réalisée => Item dans son bin d'origine
                     binPacking.addElementaryTransformation(NeighborhoodOperator.RELOCATE, new Integer[] {itemIndex, binPacking.getBins().indexOf(binItem)});
-                    // TODO : a voir si on lui met aussi dans le meme ordre
-                    //binPacking.setNeighborhoodOperatorMap(NeighborhoodOperator.RELOCATE, new Integer[] {itemIndex, binPacking.getBins().indexOf(bin)});
+                    if (symmetricalElementaryTransformations) {
+                        // Si on veut les transformations symétriques, alors on empêche la transformation élémentaire que l'on vient de faire
+                        binPacking.addElementaryTransformation(NeighborhoodOperator.RELOCATE, new Integer[] {itemIndex, binPacking.getBins().indexOf(bin)});
+                    }
                 });
                 item.setBin(Optional.of(bin));
 
@@ -38,6 +39,30 @@ public enum NeighborhoodOperator {
                 binPacking.setFitness();
                 return Optional.of(binPacking);
             }
+        // TODO : regarder si ajout d'un bin si pas la place dans la destination peut être intéressant
+
+//            else {
+//                // Si le bin n'a pas la place alors on en crée un nouveau
+//                Bin newBin = new Bin(bin.getSize());
+//                newBin.addItem(item);
+//                binPacking.getBins().add(newBin);
+//                binOpt.ifPresent(binItem -> {
+//                    binItem.removeItem(item);
+//                    // Si le bin n'a plus d'items, on ne le supprime pas de la liste, mais sa taille restante est sa capacité max.
+//                    // On lui met sa transformation inverse de celle réalisée => Item dans son bin d'origine
+//                    binPacking.addElementaryTransformation(NeighborhoodOperator.RELOCATE, new Integer[] {itemIndex, binPacking.getBins().indexOf(binItem)});
+//                    if (symmetricalElementaryTransformations) {
+//                        // Si on veut les transformations symétriques, alors on empêche la transformation élémentaire que l'on vient de faire
+//                        binPacking.addElementaryTransformation(NeighborhoodOperator.RELOCATE, new Integer[] {itemIndex, binPacking.getBins().indexOf(newBin)});
+//                    }
+//                });
+//                item.setBin(Optional.of(newBin));
+//
+//                //Calcul de la nouvelle fitness
+//                binPacking.setFitness();
+//                return Optional.of(binPacking);
+//
+//            }
         }
         // Il n'y a pas eu de voisinage créé
         return Optional.empty();
@@ -51,7 +76,7 @@ public enum NeighborhoodOperator {
      * @param itemIndex2  l'index de l'item 2 à déplacer
      * @return un Optional du binPacking modifié, ou un Optional vide, s'il n'a pas été modifié
      */
-    public static Optional<BinPacking> exchangeItems(BinPacking binPacking, int itemIndex1, int itemIndex2) {
+    public static Optional<BinPacking> exchangeItems(BinPacking binPacking, int itemIndex1, int itemIndex2, boolean symmetricalElementaryTransformations) {
         Item item1 = binPacking.getItems().get(itemIndex1);
         Item item2 = binPacking.getItems().get(itemIndex2);
         Optional<Bin> binOpt1 = item1.getBin();
@@ -77,7 +102,10 @@ public enum NeighborhoodOperator {
                 // On lui met sa transformation inverse de celle réalisée => Item1 avec l'item2 en partant du bin 2 au bin 1
                 binPacking.addElementaryTransformation(NeighborhoodOperator.EXCHANGE, new Integer[] {itemIndex1, itemIndex2, binPacking.getBins().indexOf(bin2), binPacking.getBins().indexOf(bin1)});
                 // TODO : a voir si on lui met aussi dans le meme ordre
-                //binPacking.setNeighborhoodOperatorMap(NeighborhoodOperator.EXCHANGE, new Integer[] {itemIndex1, itemIndex2, binPacking.getBins().indexOf(bin1), binPacking.getBins().indexOf(bin2)});
+                if (symmetricalElementaryTransformations) {
+                    // Si on veut les transformations symétriques, alors on empêche la transformation élémentaire que l'on vient de faire
+                    binPacking.addElementaryTransformation(NeighborhoodOperator.EXCHANGE, new Integer[] {itemIndex1, itemIndex2, binPacking.getBins().indexOf(bin1), binPacking.getBins().indexOf(bin2)});
+                }
                 return Optional.of(binPacking);
             }
         }
