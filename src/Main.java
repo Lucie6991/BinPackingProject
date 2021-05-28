@@ -8,7 +8,7 @@ public class Main {
 
         // Conversion des fichiers
         BinPacking binPacking1 = DataConverter.convertFile("data/binpack1d_00.txt");
-        BinPacking binPacking2 = DataConverter.convertFile("data/binpack1d_00.txt");
+        BinPacking binPacking2 = DataConverter.convertFile("data/binpack1d_01.txt");
         BinPacking binPacking3 = DataConverter.convertFile("data/binpack1d_00.txt");
         BinPacking binPacking4 = DataConverter.convertFile("data/binpack1d_00.txt");
 
@@ -47,16 +47,20 @@ public class Main {
         // On crée les opérateurs de voisinage de notre choix pour la métaheuristique
         List<NeighborhoodOperator> operators = new ArrayList<>();
         operators.add(NeighborhoodOperator.RELOCATE);
-//        operators.add(NeighborhoodOperator.EXCHANGE);
-        Metaheuristic metaheuristic = new Metaheuristic(operators, 1000, 2);
+      //  operators.add(NeighborhoodOperator.EXCHANGE);
+        Metaheuristic metaheuristic = new Metaheuristic(operators, 10, 2);
 
 
         // Exercice 7
         System.out.println("----> Recherche Tabou : ");
-        BinPacking solutionTabuSearch = metaheuristic.tabuSearch(binPacking1, true);
+        BinPacking solutionTabuSearch = metaheuristic.tabuSearch(binPacking2, true);
         System.out.println(solutionTabuSearch.toStringBins());
         System.out.println(solutionTabuSearch.getSolutionCount());
 
+        System.out.println("----> Recherche Recuit Simulé : ");
+        BinPacking solutionSimulatedAnneling = metaheuristic.simulatedAnnealing(binPacking2, 100);
+        System.out.println(solutionSimulatedAnneling.toStringBins());
+        System.out.println(solutionSimulatedAnneling.getSolutionCount());
 
     }
 }

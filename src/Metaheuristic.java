@@ -17,8 +17,42 @@ public class Metaheuristic {
         this.tabuListSize = tabuListSize;
     }
 
-    public void simulatedAnnealing(BinPacking initialSolution) {
+    public BinPacking simulatedAnnealing(BinPacking initialSolution, float initialTemp) {
         // TODO : RECUIT SIMULE
+        BinPacking solutionMin = initialSolution;
+        BinPacking actualBin = initialSolution;
+        BinPacking randomBin;
+        BinPacking nextBin;
+        float temp = initialTemp;
+        int nbBinsMin = initialSolution.getBins().size();
+        List<Map<NeighborhoodOperator, Integer[]>> T = new ArrayList<>();
+        for (int k = 0; k < 50; k++) {
+            for (int l = 0; l < 10; l++){
+                randomBin = getOneNeighbourRandomly(actualBin, T);
+                int delta = randomBin.getFitness() - actualBin.getFitness();
+                if (delta <= 0) {
+                    nextBin = randomBin;
+                    if (nextBin.getFitness() < solutionMin.getFitness()) {
+                        solutionMin = nextBin;
+                        nbBinsMin = nextBin.getBins().size();
+                    }
+                }
+                else {
+                    // A MODIFIER
+                    double p = Math.random();
+                    double critere = Math.exp(-delta/temp);
+                    if (p <= critere){
+                        nextBin = randomBin;
+                    }
+                    else {
+                        nextBin = actualBin;
+                    }
+                }
+                actualBin = nextBin;
+            }
+            temp = decreaseTemp(temp);
+        }
+        return solutionMin;
     }
 
     /**
@@ -71,7 +105,7 @@ public class Metaheuristic {
     }
 
     /**
-     * Méthode qui permet de récupérer toutes les solutions voisine à une solution donnée.
+     * Méthode qui permet de récupérer toutes les solutions voisines à une solution donnée.
      * L'opérateur de voisinage est choisi aléatoirement dans la liste des opérateurs.
      * Les solutions utilisant les transformations données en exceptions ne sont pas créés
      *
@@ -156,4 +190,28 @@ public class Metaheuristic {
         }
         return neighbours;
     }
+
+    /**
+     * Méthode permettant de prendre aléatoirement une solution parmi les solutions voisines
+     * @param solution la solution actuelle dont on veut le voisinage
+     * @param T liste des exceptions
+     * @return une solution binPacking aléatoire parmi le voisinage
+     */
+    public BinPacking getOneNeighbourRandomly(BinPacking solution, List<Map<NeighborhoodOperator, Integer[]>> T) {
+        List<BinPacking> V = getNeighborhoodWithoutExceptions(solution, T);
+        int i = (int) (Math.random() * V.size());
+        return V.get(i);
+    }
+
+    /**
+     * Méthode permettant de décrémenter la température
+     * @param temp la température actuelle
+     * @return la température suivante
+     */
+    public float decreaseTemp (float temp) {
+        float nu =0.5f;
+        return temp*nu;
+    }
 }
+
+
