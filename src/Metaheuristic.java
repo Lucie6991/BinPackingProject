@@ -17,29 +17,30 @@ public class Metaheuristic {
         this.tabuListSize = tabuListSize;
     }
 
-    public BinPacking simulatedAnnealing(BinPacking initialSolution, float initialTemp) {
-        // TODO : RECUIT SIMULE
+    public BinPacking simulatedAnnealing(BinPacking initialSolution, double initialTemp, double coefDecreasingTemp) {
+
         BinPacking solutionMin = initialSolution;
         BinPacking actualBin = initialSolution;
-        BinPacking randomBin;
         BinPacking nextBin;
-        float temp = initialTemp;
-        int nbBinsMin = initialSolution.getBins().size();
-        List<Map<NeighborhoodOperator, Integer[]>> T = new ArrayList<>();
-        for (int k = 0; k < 50; k++) {
+        // Voisinage aléatoire sélectionné
+        BinPacking randomBin;
+        double temp = initialTemp;
+        // 1ère boucle : nombre de changement de température
+        for (int k = 0; k < 10; k++) {
+            // 2nde boucle : nombre de mouvement effectué à une température
             for (int l = 0; l < 10; l++){
-                randomBin = getOneNeighbourRandomly(actualBin, T);
+                // Sélection d'un voisin aléatoire
+                randomBin = getOneNeighbourRandomly(actualBin);
                 int delta = randomBin.getFitness() - actualBin.getFitness();
                 if (delta <= 0) {
                     nextBin = randomBin;
                     if (nextBin.getFitness() < solutionMin.getFitness()) {
                         solutionMin = nextBin;
-                        nbBinsMin = nextBin.getBins().size();
                     }
                 }
                 else {
-                    // A MODIFIER
                     double p = Math.random();
+                    // Règle de Metropolis
                     double critere = Math.exp(-delta/temp);
                     if (p <= critere){
                         nextBin = randomBin;
@@ -50,7 +51,8 @@ public class Metaheuristic {
                 }
                 actualBin = nextBin;
             }
-            temp = decreaseTemp(temp);
+            // Décrémentation de la température
+            temp = decreaseTemp(temp, coefDecreasingTemp);
         }
         return solutionMin;
     }
@@ -194,23 +196,33 @@ public class Metaheuristic {
     /**
      * Méthode permettant de prendre aléatoirement une solution parmi les solutions voisines
      * @param solution la solution actuelle dont on veut le voisinage
-     * @param T liste des exceptions
      * @return une solution binPacking aléatoire parmi le voisinage
      */
-    public BinPacking getOneNeighbourRandomly(BinPacking solution, List<Map<NeighborhoodOperator, Integer[]>> T) {
-        List<BinPacking> V = getNeighborhoodWithoutExceptions(solution, T);
-        int i = (int) (Math.random() * V.size());
-        return V.get(i);
+    public BinPacking getOneNeighbourRandomly(BinPacking solution) {
+       Optional<BinPacking> res = null;
+        // On choisit un opérateur de voisinage au hasard
+        Random random = new Random();
+        NeighborhoodOperator operator = neighborhoodsOperators.get(random.nextInt(neighborhoodsOperators.size()));
+        if (operator.equals(NeighborhoodOperator.RELOCATE)) {
+            do {
+                res = NeighborhoodOperator.relocateItem(solution, random.nextInt(solution.getNbItem()), random.nextInt(solution.getBins().size()), false);
+            } while (res.isEmpty());
+        } else if (operator.equals(NeighborhoodOperator.EXCHANGE)) {
+            do {
+                res = NeighborhoodOperator.exchangeItems(solution, random.nextInt(solution.getNbItem()), random.nextInt(solution.getNbItem()), false);
+            } while (res.isEmpty());
+        }
+        return res.get();
     }
+
 
     /**
      * Méthode permettant de décrémenter la température
      * @param temp la température actuelle
      * @return la température suivante
      */
-    public float decreaseTemp (float temp) {
-        float nu =0.5f;
-        return temp*nu;
+    public double decreaseTemp (double temp, double coefDecreasingTemp) {
+        return temp*coefDecreasingTemp;
     }
 }
 
