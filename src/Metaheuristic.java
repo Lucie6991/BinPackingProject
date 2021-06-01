@@ -17,8 +17,15 @@ public class Metaheuristic {
         this.tabuListSize = tabuListSize;
     }
 
+    /**
+     * Représente la méthode du Recuit simulé
+     *
+     * @param initialSolution la solution de départ
+     * @param initialTemp la température initiale
+     * @param coefDecreasingTemp le coefficient de décroissance de la température
+     * @return la solution minimale trouvée
+     */
     public BinPacking simulatedAnnealing(BinPacking initialSolution, double initialTemp, double coefDecreasingTemp) {
-
         BinPacking solutionMin = initialSolution;
         BinPacking actualBin = initialSolution;
         BinPacking nextBin;
@@ -26,16 +33,16 @@ public class Metaheuristic {
         BinPacking randomBin;
         double temp = initialTemp;
         // 1ère boucle : nombre de changement de température
-        for (int k = 0; k < 10; k++) {
+        for (int k = 0; k < 100; k++) {
             // 2nde boucle : nombre de mouvement effectué à une température
-            for (int l = 0; l < 10; l++){
+            for (int l = 0; l < 100; l++){
                 // Sélection d'un voisin aléatoire
                 randomBin = getOneNeighbourRandomly(actualBin);
                 int delta = randomBin.getFitness() - actualBin.getFitness();
-                if (delta <= 0) {
+                if (delta >= 0) {
                     nextBin = randomBin;
-                    if (nextBin.getFitness() < solutionMin.getFitness()) {
-                        solutionMin = nextBin;
+                    if (nextBin.getFitness() > solutionMin.getFitness()) {
+                        solutionMin = actualBin;
                     }
                 }
                 else {
@@ -199,17 +206,18 @@ public class Metaheuristic {
      * @return une solution binPacking aléatoire parmi le voisinage
      */
     public BinPacking getOneNeighbourRandomly(BinPacking solution) {
-       Optional<BinPacking> res = null;
+       Optional<BinPacking> res = Optional.empty();
+       BinPacking neighbour = solution.clone();
         // On choisit un opérateur de voisinage au hasard
         Random random = new Random();
         NeighborhoodOperator operator = neighborhoodsOperators.get(random.nextInt(neighborhoodsOperators.size()));
         if (operator.equals(NeighborhoodOperator.RELOCATE)) {
             do {
-                res = NeighborhoodOperator.relocateItem(solution, random.nextInt(solution.getNbItem()), random.nextInt(solution.getBins().size()), false);
+                res = NeighborhoodOperator.relocateItem(neighbour, random.nextInt(neighbour.getNbItem()), random.nextInt(neighbour.getBins().size()), false);
             } while (res.isEmpty());
         } else if (operator.equals(NeighborhoodOperator.EXCHANGE)) {
             do {
-                res = NeighborhoodOperator.exchangeItems(solution, random.nextInt(solution.getNbItem()), random.nextInt(solution.getNbItem()), false);
+                res = NeighborhoodOperator.exchangeItems(neighbour, random.nextInt(neighbour.getNbItem()), random.nextInt(neighbour.getNbItem()), false);
             } while (res.isEmpty());
         }
         return res.get();
@@ -219,6 +227,7 @@ public class Metaheuristic {
     /**
      * Méthode permettant de décrémenter la température
      * @param temp la température actuelle
+     * @param coefDecreasingTemp le coefficient de décroissante de la température
      * @return la température suivante
      */
     public double decreaseTemp (double temp, double coefDecreasingTemp) {
