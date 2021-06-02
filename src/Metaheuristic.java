@@ -17,8 +17,51 @@ public class Metaheuristic {
         this.tabuListSize = tabuListSize;
     }
 
-    public void simulatedAnnealing(BinPacking initialSolution) {
-        // TODO : RECUIT SIMULE
+    /**
+     * Représente la méthode du Recuit simulé
+     *
+     * @param initialSolution la solution de départ
+     * @param initialTemp la température initiale
+     * @param coefDecreasingTemp le coefficient de décroissance de la température
+     * @return la solution minimale trouvée
+     */
+    public BinPacking simulatedAnnealing(BinPacking initialSolution, double initialTemp, double coefDecreasingTemp) {
+        BinPacking solutionMin = initialSolution;
+        BinPacking actualBin = initialSolution;
+        BinPacking nextBin;
+        // Voisinage aléatoire sélectionné
+        BinPacking randomBin;
+        double temp = initialTemp;
+        // 1ère boucle : nombre de changement de température
+        for (int k = 0; k < 100; k++) {
+            // 2nde boucle : nombre de mouvement effectué à une température
+            for (int l = 0; l < 100; l++){
+                // Sélection d'un voisin aléatoire
+                randomBin = getOneNeighbourRandomly(actualBin);
+                int delta = randomBin.getFitness() - actualBin.getFitness();
+                if (delta >= 0) {
+                    nextBin = randomBin;
+                    if (nextBin.getFitness() > solutionMin.getFitness()) {
+                        solutionMin = actualBin;
+                    }
+                }
+                else {
+                    double p = Math.random();
+                    // Règle de Metropolis
+                    double critere = Math.exp(-delta/temp);
+                    if (p <= critere){
+                        nextBin = randomBin;
+                    }
+                    else {
+                        nextBin = actualBin;
+                    }
+                }
+                actualBin = nextBin;
+            }
+            // Décrémentation de la température
+            temp = decreaseTemp(temp, coefDecreasingTemp);
+        }
+        return solutionMin;
     }
 
     /**
@@ -71,7 +114,7 @@ public class Metaheuristic {
     }
 
     /**
-     * Méthode qui permet de récupérer toutes les solutions voisine à une solution donnée.
+     * Méthode qui permet de récupérer toutes les solutions voisines à une solution donnée.
      * L'opérateur de voisinage est choisi aléatoirement dans la liste des opérateurs.
      * Les solutions utilisant les transformations données en exceptions ne sont pas créés
      *
@@ -156,4 +199,40 @@ public class Metaheuristic {
         }
         return neighbours;
     }
+
+    /**
+     * Méthode permettant de prendre aléatoirement une solution parmi les solutions voisines
+     * @param solution la solution actuelle dont on veut le voisinage
+     * @return une solution binPacking aléatoire parmi le voisinage
+     */
+    public BinPacking getOneNeighbourRandomly(BinPacking solution) {
+       Optional<BinPacking> res = Optional.empty();
+       BinPacking neighbour = solution.clone();
+        // On choisit un opérateur de voisinage au hasard
+        Random random = new Random();
+        NeighborhoodOperator operator = neighborhoodsOperators.get(random.nextInt(neighborhoodsOperators.size()));
+        if (operator.equals(NeighborhoodOperator.RELOCATE)) {
+            do {
+                res = NeighborhoodOperator.relocateItem(neighbour, random.nextInt(neighbour.getNbItem()), random.nextInt(neighbour.getBins().size()), false);
+            } while (res.isEmpty());
+        } else if (operator.equals(NeighborhoodOperator.EXCHANGE)) {
+            do {
+                res = NeighborhoodOperator.exchangeItems(neighbour, random.nextInt(neighbour.getNbItem()), random.nextInt(neighbour.getNbItem()), false);
+            } while (res.isEmpty());
+        }
+        return res.get();
+    }
+
+
+    /**
+     * Méthode permettant de décrémenter la température
+     * @param temp la température actuelle
+     * @param coefDecreasingTemp le coefficient de décroissante de la température
+     * @return la température suivante
+     */
+    public double decreaseTemp (double temp, double coefDecreasingTemp) {
+        return temp*coefDecreasingTemp;
+    }
 }
+
+
