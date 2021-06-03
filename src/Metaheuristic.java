@@ -80,11 +80,12 @@ public class Metaheuristic {
         BinPacking nextBin;
         for (int i = 0; i < maxIter; i++) {
             List<BinPacking> C = getNeighborhoodWithoutExceptions(actualBin, T);
-            // On enlève ceux qui sont dans la TabuList (en comparant les valeurs et non les adresses)
+            // On enlève ceux qui sont dans la TabuList
             if (C.isEmpty()) {
                 // S'il n'a pas de voisin, c'est fini on retourne la meilleure solution
                 return solutionMin;
             }
+
             // On choisi le nextBin avec le max de fitness
             nextBin = C.stream()
                     .max(comparing(BinPacking::getFitness))

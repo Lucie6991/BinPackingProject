@@ -185,21 +185,26 @@ public class Console {
     }
 
     public void tabou() throws IOException {
-        int choixTaille;
+        int choixTaille, maxIter;
         choixMenu2();
         System.out.println("Rentrez la taille de la liste Tabou");
         choixTaille = scanner.nextInt();
+        System.out.println("Rentrez le nombre maximum d'itérations");
+        maxIter = scanner.nextInt();
 
         List<NeighborhoodOperator> operators = new ArrayList<>();
         operators.add(NeighborhoodOperator.RELOCATE);
         operators.add(NeighborhoodOperator.EXCHANGE);
-        Metaheuristic metaheuristic = new Metaheuristic(operators, 10, choixTaille);
+        Metaheuristic metaheuristic = new Metaheuristic(operators, maxIter, choixTaille);
 
         System.out.println("----> Recherche Tabou : ");
         BinPacking solutionTabuSearch = metaheuristic.tabuSearch(binPacking, true);
         System.out.println(solutionTabuSearch.toStringBins());
         System.out.println("Nombre de bins : " + solutionTabuSearch.getSolutionCount());
-        System.out.println("Fitness : " + solutionTabuSearch.getFitness() + "\n");
+        System.out.println("Fitness : " + solutionTabuSearch.getFitness());
+        System.out.println("Espace utilisé : " + solutionTabuSearch.getUsedSpace() );
+        System.out.println("Espace restant : " + solutionTabuSearch.getFreeSpace());
+        System.out.println("Pourcentage de remplissage des bins : " + solutionTabuSearch.getUsedPercent() + " %");
     }
 
     public void recuitSimule() throws IOException {

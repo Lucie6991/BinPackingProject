@@ -144,6 +144,20 @@ public class BinPacking implements Cloneable {
         return getNotEmptyBins().size();
     }
 
+    public int getUsedSpace() {
+        return getBins().stream()
+                .mapToInt(b -> binCapacity - b.getFreeSize())
+                .sum();
+    }
+
+    public int getFreeSpace() {
+        return binCapacity * getSolutionCount() - getUsedSpace();
+    }
+
+    public int getUsedPercent() {
+        return (int) ((getUsedSpace() / (double) (binCapacity * getNotEmptyBins().size())) * 100);
+    }
+
     @Override
     protected BinPacking clone() {
         BinPacking clone = null;
