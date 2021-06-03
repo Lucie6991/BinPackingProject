@@ -51,10 +51,10 @@ public class Console {
                     affichageSolution();
                     break;
                 case 7:
-                    tabou();
+                    recuitSimule();
                     break;
                 case 8:
-                    recuitSimule();
+                    tabou();
                     break;
                 case 9:
                     return ;
@@ -69,12 +69,13 @@ public class Console {
         System.out.println("4. Lancement de l'algorithme One item by bin");
         System.out.println("5. Lancement de l'algorithme First Fit Randomly");
         System.out.println("6. Lancement de l'algorithme First Fit Increasing");
-        System.out.println("7. Lancement de la recherche Tabou");
-        System.out.println("8. Lancement de la recherche Recuit simulé");
+        System.out.println("7. Lancement de la recherche Recuit simulé");
+        System.out.println("8. Lancement de la recherche Tabou");
         System.out.println("9. Quitter");
     }
 
     public void menu2() {
+        System.out.println("Veuillez sélectionner un algorithme pour générer une solution initiale");
         System.out.println("1. Solution initiale avec l'algorithme First fit decreasing");
         System.out.println("2. Solution initiale avec l'algorithme One item by bin");
         System.out.println("3. Solution initiale avec l'algorithme First Fit Randomly");
@@ -85,7 +86,7 @@ public class Console {
         System.out.println("Liste des fichiers BinPacking existants avec comme arguments [taille d'un bin; nombre d'items]");
         System.out.println("0. Bin Packing 0 -> [9; 24]");
         System.out.println("1. Bin Packing 1 -> [150; 250]");
-        System.out.println("2. Bin Packing 2 -> [150; 200]");
+        System.out.println("2. Bin Packing 2 -> [150; 500]");
         System.out.println("3. Bin Packing 3 -> [1000; 60]");
         System.out.println("4. Bin Packing 4 -> [1000; 120]");
         System.out.println("5. Bin Packing 5 -> [1000; 249]");
@@ -207,7 +208,7 @@ public class Console {
         choixMenu2();
 
         do {
-            System.out.println("\nChoisir une température (>1): ");
+            System.out.println("Choisir une température (>1): ");
             choixTemp = scanner.nextInt();
         } while (choixTemp < 1);
 
