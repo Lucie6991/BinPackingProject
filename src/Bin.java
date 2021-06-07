@@ -29,16 +29,8 @@ public class Bin {
         return size;
     }
 
-    public void setSize(int size) {
-        this.size = size;
-    }
-
     public List<Item> getItems() {
         return items;
-    }
-
-    public void setItems(List<Item> items) {
-        this.items = items;
     }
 
     public String toString() {

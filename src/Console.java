@@ -6,6 +6,7 @@ import java.util.Scanner;
 public class Console {
     Scanner scanner = new Scanner(System.in);
     BinPacking binPacking;
+    private int id;
 
     public void run() throws IOException {
         int choix;
@@ -161,6 +162,7 @@ public class Console {
                 case 1:
                     System.out.println("----> First fit decreasing : ");
                     SolutionGenerator.firstFitDecreasing(binPacking);
+                    id = 1;
                     affichageSolution();
                     break;
                 case 2:
@@ -192,6 +194,7 @@ public class Console {
         System.out.println("Rentrez le nombre maximum d'itérations");
         maxIter = scanner.nextInt();
 
+        // Ajout du paramètre MaxIter
         List<NeighborhoodOperator> operators = new ArrayList<>();
         operators.add(NeighborhoodOperator.RELOCATE);
         operators.add(NeighborhoodOperator.EXCHANGE);
@@ -223,7 +226,9 @@ public class Console {
         } while (choixCoefTemp < 0 || choixCoefTemp > 1);
 
         List<NeighborhoodOperator> operators = new ArrayList<>();
-        operators.add(NeighborhoodOperator.RELOCATE);
+        if (id != 1) {
+            operators.add(NeighborhoodOperator.RELOCATE);
+        }
         operators.add(NeighborhoodOperator.EXCHANGE);
         Metaheuristic metaheuristic = new Metaheuristic(operators, 10, 2);
 

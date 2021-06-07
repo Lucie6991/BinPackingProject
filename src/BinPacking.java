@@ -29,10 +29,6 @@ public class BinPacking implements Cloneable {
         setFitness();
     }
 
-    public String toStringItems() {
-        return items.toString();
-    }
-
     /**
      * Affiche les bins en prenant en compte que ceux non vides
      *
@@ -55,32 +51,16 @@ public class BinPacking implements Cloneable {
         return bins;
     }
 
-    public void setBins(List<Bin> bins) {
-        this.bins = bins;
-    }
-
     public List<Item> getItems() {
         return items;
-    }
-
-    public void setItems(List<Item> items) {
-        this.items = items;
     }
 
     public int getBinCapacity() {
         return binCapacity;
     }
 
-    public void setBinCapacity(int binCapacity) {
-        this.binCapacity = binCapacity;
-    }
-
     public int getNbItem() {
         return nbItem;
-    }
-
-    public void setNbItem(int nbItem) {
-        this.nbItem = nbItem;
     }
 
     public int getFitness() {
@@ -144,16 +124,28 @@ public class BinPacking implements Cloneable {
         return getNotEmptyBins().size();
     }
 
+    /**
+     * Permet de récupérer la taille de l'espace total utilisé
+     * @return la taille de l'espace utilisé
+     */
     public int getUsedSpace() {
         return getBins().stream()
                 .mapToInt(b -> binCapacity - b.getFreeSize())
                 .sum();
     }
 
+    /**
+     * Permet de récupérer l'espace libre dans le binPacking
+     * @return l'espace libre
+     */
     public int getFreeSpace() {
         return binCapacity * getSolutionCount() - getUsedSpace();
     }
 
+    /**
+     * Permet de récupérer le pourcentage de l'espace utilisé au total par rapport à l'ensemble des bins non vides
+     * @return le pourcentage de l'espace utilisé
+     */
     public int getUsedPercent() {
         return (int) ((getUsedSpace() / (double) (binCapacity * getNotEmptyBins().size())) * 100);
     }

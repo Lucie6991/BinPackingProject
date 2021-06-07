@@ -39,30 +39,6 @@ public enum NeighborhoodOperator {
                 binPacking.setFitness();
                 return Optional.of(binPacking);
             }
-        // TODO : regarder si ajout d'un bin si pas la place dans la destination peut être intéressant
-
-//            else {
-//                // Si le bin n'a pas la place alors on en crée un nouveau
-//                Bin newBin = new Bin(bin.getSize());
-//                newBin.addItem(item);
-//                binPacking.getBins().add(newBin);
-//                binOpt.ifPresent(binItem -> {
-//                    binItem.removeItem(item);
-//                    // Si le bin n'a plus d'items, on ne le supprime pas de la liste, mais sa taille restante est sa capacité max.
-//                    // On lui met sa transformation inverse de celle réalisée => Item dans son bin d'origine
-//                    binPacking.addElementaryTransformation(NeighborhoodOperator.RELOCATE, new Integer[] {itemIndex, binPacking.getBins().indexOf(binItem)});
-//                    if (symmetricalElementaryTransformations) {
-//                        // Si on veut les transformations symétriques, alors on empêche la transformation élémentaire que l'on vient de faire
-//                        binPacking.addElementaryTransformation(NeighborhoodOperator.RELOCATE, new Integer[] {itemIndex, binPacking.getBins().indexOf(newBin)});
-//                    }
-//                });
-//                item.setBin(Optional.of(newBin));
-//
-//                //Calcul de la nouvelle fitness
-//                binPacking.setFitness();
-//                return Optional.of(binPacking);
-//
-//            }
         }
         // Il n'y a pas eu de voisinage créé
         return Optional.empty();

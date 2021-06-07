@@ -31,18 +31,18 @@ public class Metaheuristic {
         BinPacking nextBin;
         // Voisinage aléatoire sélectionné
         BinPacking randomBin;
-        double temp = initialTemp;
         // 1ère boucle : nombre de changement de température
-        for (int k = 0; k < 100; k++) {
+        for (double temp = initialTemp; temp > 1; temp *= coefDecreasingTemp) {
             // 2nde boucle : nombre de mouvement effectué à une température
-            for (int l = 0; l < 100; l++){
+            for (int l = 0; l < 10000; l++){
                 // Sélection d'un voisin aléatoire
                 randomBin = getOneNeighbourRandomly(actualBin);
                 int delta = randomBin.getFitness() - actualBin.getFitness();
                 if (delta >= 0) {
                     nextBin = randomBin;
+                    // Si la fitness du prochain bin est plus grande que la solution initiale
                     if (nextBin.getFitness() > solutionMin.getFitness()) {
-                        solutionMin = actualBin;
+                        solutionMin = nextBin;
                     }
                 }
                 else {
@@ -58,8 +58,6 @@ public class Metaheuristic {
                 }
                 actualBin = nextBin;
             }
-            // Décrémentation de la température
-            temp = decreaseTemp(temp, coefDecreasingTemp);
         }
         return solutionMin;
     }
@@ -222,17 +220,6 @@ public class Metaheuristic {
             } while (res.isEmpty());
         }
         return res.get();
-    }
-
-
-    /**
-     * Méthode permettant de décrémenter la température
-     * @param temp la température actuelle
-     * @param coefDecreasingTemp le coefficient de décroissante de la température
-     * @return la température suivante
-     */
-    public double decreaseTemp (double temp, double coefDecreasingTemp) {
-        return temp*coefDecreasingTemp;
     }
 }
 
