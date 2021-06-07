@@ -34,7 +34,7 @@ public class Metaheuristic {
         // 1ère boucle : nombre de changement de température
         for (double temp = initialTemp; temp > 1; temp *= coefDecreasingTemp) {
             // 2nde boucle : nombre de mouvement effectué à une température
-            for (int l = 0; l < 10000; l++){
+            for (int l = 0; l < 100; l++){
                 // Sélection d'un voisin aléatoire
                 randomBin = getOneNeighbourRandomly(actualBin);
                 int delta = randomBin.getFitness() - actualBin.getFitness();
